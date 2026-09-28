@@ -1,12 +1,12 @@
 ## Unreleased — feat(client): toolview images open the lightbox
 
-- feat(client): **`display_image` toolview images now open the lightbox on click.**
+- feat(client): **``display_image`` toolview images now open the lightbox on click.**
   The 1.7.1 toolview skip stays in place (class adoption still fights React's
-  `tool.call.toolview` row); instead a document-level click delegate handles
-  images `isChatImage()` leaves alone: it reads `src`, builds a single-image
-  group and calls `open([img], 0)` without writing `class`/`dataset` on the
+  ``tool.call.toolview`` row); instead a document-level click delegate handles
+  images ``isChatImage()`` leaves alone: it reads ``src``, builds a single-image
+  group and calls ``open([img], 0)`` without writing ``class``/``dataset`` on the
   row. Guards mirror the existing filters (skip svg / buttons / <32px /
-  already-adopted) plus a `/images/` route check so UI chrome is never taken
+  already-adopted) plus a ``/images/`` route check so UI chrome is never taken
   over. Paste-attachment and sidebar paths are unchanged.
 
 ## 1.7.1 — fix: display_image images vanished after a moment
@@ -24,6 +24,18 @@
   so the enhancer leaves tool-result images alone. Regular chat images are
   unaffected.
 # Changelog
+
+## 1.7.3 — docs: feature screenshots
+
+- docs: four screenshots added under `docs/images/` and embedded in the README, one
+  section each — `lightbox.png` (full-screen viewer), `columns-3col.png` and
+  `columns-multi.png` (thumbnail grid at different column counts), and
+  `hide-images.png` (hide / restore).
+- chore: `files[]` now lists those four images individually instead of globbing
+  `docs/images/**`, so the package is not published with the older 1.8 MB hero
+  image that is no longer referenced anywhere. Tarball: 2.0 MB → 1.4 MB.
+
+No functional change; the code is identical to 1.7.2.
 
 ## 1.7.2 — thumbnails/hide finalised, jump removed, hotlink fallback, no DOM reparenting
 
