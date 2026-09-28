@@ -14,7 +14,10 @@
         "cordis.patch.yml",
         "README.md",
         "LICENSE",
-        "docs/images/**"
+        "docs/images/lightbox.png",
+        "docs/images/columns-3col.png",
+        "docs/images/columns-multi.png",
+        "docs/images/hide-images.png"
     ],
     "license": "MIT",
     "engines": {
