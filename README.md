@@ -22,10 +22,30 @@ dsh plugin --profile desktop add @loyalchiiina/dsh-chat-image-lightbox
 > 1.7.2 **移除了「跳图」功能**（该功能在多次迭代中不够稳定，已整体删除，界面上不再出现 ⌖ 按钮）。
 > 1.7.2 **removed the jump-to-image feature** — it proved unreliable across iterations and has been deleted outright; no ⌖ button appears anymore.
 
-![图片灯箱全屏查看](docs/images/chat-image-lightbox.png)
+## 效果预览 · Screenshots
 
-> 灯箱全屏态：原图完整显示（自动适配屏幕高度），右上角是「⬇ 下载」与「✕ 关闭」按钮；同一条消息里的其他图片可用方向键连续浏览。
-> Full-screen lightbox: the image auto-fits the viewport, with ⬇ download and ✕ close in the top-right; arrow keys page through the other images in the same message.
+### 灯箱查看 · Full-screen lightbox
+
+![灯箱全屏查看](docs/images/lightbox.png)
+
+> 原图完整显示（自动适配屏幕高度），右上角是「⬇ 下载」与「✕ 关闭」；同一条消息里的其他图片可连续翻页浏览。
+> The full-resolution image auto-fits the viewport, with ⬇ download and ✕ close in the top-right; other images in the same message can be paged through.
+
+### 缩略图分列 · Thumbnail grid with adjustable columns
+
+![缩略图分列效果](docs/images/columns-3col.png)
+
+![多列分列效果](docs/images/columns-multi.png)
+
+> 一键把整个会话的图片收成网格；面板里的「缩略图显示列数」可设 1–12 列，输入的值会保存为默认值。
+> One click collapses every image in the conversation into a grid; the **缩略图显示列数** field sets 1–12 columns and the value is saved as your default.
+
+### 隐藏 / 展开 · Hide / restore
+
+![图片隐藏效果](docs/images/hide-images.png)
+
+> 一键隐藏所有图片，**并把它占的空间完全收掉**（不会留下空白带）；再点一下原样恢复。
+> One click hides every image **and closes up the space it occupied** (no blank band left); another click restores everything.
 
 ---
 
