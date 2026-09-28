@@ -1,7 +1,7 @@
 {
     "name": "@loyalchiiina/dsh-chat-image-lightbox",
-    "description": "对话里的图值得被认真看：点一下全屏灯箱（缩放/拖拽平移/下载另存/左右翻页），会话内一键把图收成可调列数的缩略图网格或整块隐藏，还能跳到下一张/上一张图片位置；本地图支持 TIFF/HEIC 自动转码。| Chat images get a proper look: full-screen lightbox (zoom / drag pan / download / prev-next), plus one-click conversation-wide thumbnail grid (configurable columns) or hide, jump-to-image navigation, and TIFF/HEIC transcoding for local files.",
-    "version": "1.7.1",
+    "description": "对话里的图值得被认真看：点一下全屏灯箱（缩放/拖拽平移/下载另存/左右翻页），一键把会话内的图收成可调列数的缩略图网格，或整块隐藏（不留空白）；本地图 TIFF/HEIC 自动无损转码，网图被防盗链拦截时自动转存本地显示。| Chat images get a proper look: full-screen lightbox (zoom / drag pan / download / prev-next), a conversation-wide thumbnail grid with adjustable columns, hide/show without leaving blank space, lossless TIFF/HEIC transcoding, and automatic local fallback for hotlink-protected images.",
+    "version": "1.7.2",
     "type": "module",
     "main": "lib/index.js",
     "exports": {
@@ -17,6 +17,9 @@
         "docs/images/**"
     ],
     "license": "MIT",
+    "engines": {
+        "dsh": ">=2.0.14"
+    },
     "dsh": {
         "bundle": {
             "patch": "./cordis.patch.yml"
@@ -24,7 +27,8 @@
         "client": {
             "inject": [
                 "@deepseek-ai/dsh-client-runtime",
-                "@deepseek-ai/dsh-client-ui-conversation"
+                "@deepseek-ai/dsh-client-ui-conversation",
+                "@deepseek-ai/dsh-client-ui-tool"
             ],
             "platform": "web"
         }
@@ -35,6 +39,8 @@
         "image",
         "lightbox",
         "gallery",
+        "thumbnail",
+        "tiff",
         "download"
     ],
     "repository": {
