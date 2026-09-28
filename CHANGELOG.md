@@ -14,6 +14,110 @@
   unaffected.
 # Changelog
 
+## 1.7.2 — thumbnails/hide finalised, jump removed, hotlink fallback, no DOM reparenting
+
+> Verified end to end on **DSH NEXT 2.0.15**. Minimum kernel: **DSH 2.0.14**.
+
+### ⚠️ Breaking / removed
+
+- **removed:** the **jump-to-image** feature. Its button (`⌖`), all of its code and
+  its CSS were deleted. Across iterations it stayed unreliable — it stepped
+  between message *blocks* rather than pictures, so with a batch of images in one
+  container it appeared to do nothing, and it landed only on the first or last
+  picture. Rather than ship a control that works only sometimes, it is gone.
+  The toolbar panel now holds exactly: thumbnail switch, hide switch, column field.
+
+### 🔴 Fixed: the conversation could render completely blank
+
+- fix(client): **never reparent React-managed DOM nodes** — this is the headline
+  bug of this release. An earlier build completed the thumbnail row by moving the
+  `<img>` elements into a container the plugin created (`removeChild` +
+  `appendChild`). That mutates the tree underneath DSH's virtual list, and the
+  host logged:
+
+  ```
+  [warn] slot entry crashed in 'conversation.chat.node': [object DOMException]
+  ```
+
+  The whole transcript then rendered as **nothing** — no pictures, no prose —
+  which reads to a user as "the content was deleted". All reparenting code was
+  removed. The thumbnail look is now expressed purely with classes and inline
+  styles on the existing elements; no node is moved, removed or recreated.
+
+### Fixed: hidden images no longer leave a blank band
+
+- fix(client): hiding used to hide only the `<img>`, leaving the wrapper's own
+  margins/padding and a forced `min-height: 18px` behind — a large empty band
+  stayed in the conversation. Now the wrappers that exist only to hold a picture
+  are hidden as well (`:has(> img)`), and the block itself is tightened to zero
+  margin/padding/min-height, so the row closes up completely.
+
+### Fixed: only conversation images are touched
+
+- fix(client): `isChatImage()` decided purely on pixel size, so the signed-in
+  **account avatar** and the sidebar glyphs — ordinary `<img>` elements — were
+  adopted as chat photos and got resized/moved when thumbnails were switched on.
+  A new `isInConversation()` check rejects known chrome landmarks
+  (`avatar` / `userRow` / `sidebar` / `toolbar` / `navRail`) and requires an
+  ancestor that looks like the message list. Anything else is skipped.
+
+### Fixed: text no longer squeezed by the thumbnail layout
+
+- fix(client): the block used to be given `display: grid` plus a fixed column
+  count, which laid the row's **prose and tables** into grid tracks — every line
+  wrapped early. Grid styling of the block was removed. Tiles float at 1/N width
+  and a wrapper is only floated when it holds a picture and no text.
+- fix(client): the tile wrapper is now the image's **immediate parent** only. An
+  earlier version used `closest()`, which could claim a much larger container and
+  displace unrelated UI.
+
+### Fixed: `display_image` results render as images
+
+- fix(client): `package.json` now injects `@deepseek-ai/dsh-client-ui-tool`. The
+  `tool.call.toolview` slot belongs to that package, and without it in `inject`
+  the keyed registration was silently skipped — so `display_image` returned
+  Markdown that never became an `<img>`.
+
+### Fixed: text/no-op freezes
+
+- fix(client): the MutationObserver now watches `attributes` + `class` (it only
+  watched `childList`, so the re-adoption path in its own callback could never
+  fire).
+- fix(client): `tickThumb()` / `untickThumb()` are idempotent (a per-image stamp
+  records the column count already applied), and a switch pass suppresses the
+  observer while it writes. Previously each write produced mutations that the
+  observer answered by re-applying what the pass was removing — an endless loop
+  that **froze the client** when expanding after thumbnails or typing in the
+  column field.
+- fix(client): the scroll-anchor correction runs **once** on the next frame. The
+  earlier multi-frame version contended with the browser's own relayout and fed
+  the same loop.
+
+### Added: automatic fallback for hotlink-protected images
+
+- feat(host): a search result can answer `200` and still fail in the browser.
+  Huaban's CDN (Tencent EdgeOne) rejects any request whose `Referer` is not its
+  own domain, so the picture showed as "无法预览" even though the link was good.
+  The tool probes each URL the way a browser would (loopback `Referer`) and
+  **re-saves only the ones that would be blocked**, into
+  `~/.dsh/image-gallery-auto/`. Working links stay direct, so nothing is
+  downloaded unnecessarily. The reply notes how many were re-saved.
+
+### Changed
+
+- change: the trigger button shows the text **「对话图显控制」**; the `🖼` glyph
+  was dropped (it read as a picture thumbnail rather than a control).
+- change: the column field is labelled **「缩略图显示列数」** and its value is
+  saved as the **default** for later launches. Default remains **3**.
+- change: the diagnostics channel (`igDiag`) is **off by default**
+  (`IG_DEBUG = false`). Three of its call sites sat on the hottest paths in the
+  file — every DOM mutation, every scan, every image per scan — and each one was
+  a loopback POST, which made the client stutter while output streamed. Hot paths
+  now test the flag before building the string.
+- chore: removed ~120 lines of dead code (`applyRowLayout`, `gridHostFor`,
+  `hostHasText`) left over from the retired grid-host approach.
+
+
 ## 1.7.0 — display_image results now actually render in chat
 
 > DSH only renders an image card for the built-in `read_image` tool; every
