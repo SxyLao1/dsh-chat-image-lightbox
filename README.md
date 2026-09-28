@@ -14,6 +14,14 @@
 dsh plugin --profile desktop add @loyalchiiina/dsh-chat-image-lightbox
 ```
 
+> **当前版本 / Current version**：`1.7.2`
+> **适用内核 / Requires**：DSH **2.0.14 及以上**（已在 **DSH NEXT 2.0.15** 上完整验证）。
+> DSH **2.0.14+** (fully verified on **DSH NEXT 2.0.15**).
+
+> ⚠️ **升级到 1.7.2 前请注意 / Before upgrading to 1.7.2**
+> 1.7.2 **移除了「跳图」功能**（该功能在多次迭代中不够稳定，已整体删除，界面上不再出现 ⌖ 按钮）。
+> 1.7.2 **removed the jump-to-image feature** — it proved unreliable across iterations and has been deleted outright; no ⌖ button appears anymore.
+
 ![图片灯箱全屏查看](docs/images/chat-image-lightbox.png)
 
 > 灯箱全屏态：原图完整显示（自动适配屏幕高度），右上角是「⬇ 下载」与「✕ 关闭」按钮；同一条消息里的其他图片可用方向键连续浏览。
@@ -38,13 +46,18 @@ dsh plugin --profile desktop add @loyalchiiina/dsh-chat-image-lightbox
 
 ### 会话级图片控制 · Conversation-wide controls
 
+工具行里的 **「对话图显控制」** 按钮打开面板，面板内含三项：
+
+The **"对话图显控制"** button in the composer row opens a panel with three controls:
+
 | 中文 | English |
 |---|---|
-| 一键把整个会话图片收成缩略图网格 | Collapse every image in the conversation into a thumbnail grid |
-| 网格列数可调（1–12，设置被记住） | Configurable columns per row (1–12, remembered) |
-| 一键隐藏 / 展开所有图片 | Hide / restore all images at once |
-| 跳图定位：左键上一张、右键下一张、三连最远/最近 | Jump: left = prev, right = next, triple = farthest / nearest |
-| 落点闪一下高亮 | Landing block flashes briefly |
+| **缩略图**：一键把整个会话的图片收成网格 | **Thumbnail**: collapse every image in the conversation into a grid |
+| **缩略图显示列数**：1–12 可调，改过即存为默认值 | **Columns per row**: 1–12, and your value is saved as the default |
+| **隐藏**：一键隐藏 / 再点恢复，**不留空白** | **Hide**: hide / restore all images, **leaving no blank space** |
+
+> 列数说明：默认 3 列。设置后会记住，下次启动仍用该值；改回其他值即覆盖默认。
+> Columns: 3 by default. The value is remembered across restarts; changing it again simply replaces the stored default.
 
 ### 格式与清晰度 · Formats & fidelity
 
@@ -54,6 +67,7 @@ dsh plugin --profile desktop add @loyalchiiina/dsh-chat-image-lightbox
 | TIFF/PNG/BMP **无损原像素**（逐像素零误差） | TIFF/PNG/BMP lossless, **native pixels** (bit-exact) |
 | 2 亿像素大图流畅显示 | 200-megapixel images display smoothly |
 | 11 种格式实测支持（JPG/PNG/WebP/GIF/AVIF/SVG/BMP…） | 11 formats verified (JPG/PNG/WebP/GIF/AVIF/SVG/BMP…) |
+| **网图被防盗链拦截时自动转存本地显示** | **Hotlink-protected remote images are auto-saved locally** |
 
 ### 宿主侧工具 · Host-side tool (`display_image`)
 
@@ -62,7 +76,8 @@ dsh plugin --profile desktop add @loyalchiiina/dsh-chat-image-lightbox
 | 关键词搜网图（花瓣/Bing/搜狗 3 源回退） | Keyword image search (Huaban / Bing / Sogou fallback) |
 | 搜图自动过滤广告与他人面孔 | Auto-filters adverts & other celebrities |
 | 本地文件/目录直读（TIFF/HEIC 转码） | Read local files/dirs (TIFF/HEIC transcoded) |
-| 网图落地保存到本地目录 | Save remote images to a local folder |
+| 网图落地保存到本地目录（`save_to`） | Save remote images to a local folder (`save_to`) |
+| **能直连就直连，被拦截才自动转存** | **Direct CDN when it works, local copy only when blocked** |
 | 代理自动探活（无需手配） | Auto proxy discovery (TCP probe) |
 
 ### 隐私与安全 · Privacy & safety
@@ -72,6 +87,7 @@ dsh plugin --profile desktop add @loyalchiiina/dsh-chat-image-lightbox
 | 一切本地服务仅回环（loopback-only） | All local services are loopback-only |
 | 打开文件夹用参数化调用，绝不拼接 shell 命令 | "Show in folder" spawns argv, never a shell string |
 | 保存说明不回显本机路径 | No local paths echoed in confirmations |
+| 只作用于对话区图片，不碰侧栏/头像 | Only touches conversation images, never the sidebar or avatar |
 
 ---
 
@@ -98,12 +114,14 @@ Pictures from your agent sit tiny inside a bubble — to see detail you have to 
 - **HD original on open**: clicking any image opens the lightbox with the **full-resolution original image** — zooming in shows the real high-resolution file
 - **Clean UI**: The lightbox toolbar (download / close), prev/next arrows, counter and caption are **hidden whenever the lightbox is closed** — they only appear while you are actually viewing an image, so they never clutter the chat layout
 - **Zoom / pan pad**: the lightbox also has explicit controls for what the gestures do — `⊖` `⊕` `1×` for zoom with a live percentage readout, and a d-pad for moving the view (press and hold to keep moving). Wheel, drag and `+`/`-`/`Shift+arrow` all still work
-- **Conversation-wide image controls in one popover**: a single compact **「🖼 图片」** trigger sits next to the access-mode control and slides out a panel holding all four actions — no row of buttons cluttering the composer
-- **Thumbnail grid with configurable columns**: one click collapses **every** image block in the conversation into a CSS grid of small tiles (captions span the full row). A number field sets the **columns per row (1–12)**, remembered across reloads
-- **Hide / show whole blocks**: one click hides every image (each block collapses to a slim strip), another click brings them back intact
-- **Jump to image**: one button for locating images — **left click** steps to the previous image, **right click** to the next; **left triple-click** jumps to the farthest image from the viewport centre, **right triple-click** to the nearest. The landing block flashes. Stepping is relative to the last landed block and stops at the ends
+- **Conversation-wide image controls in one popover**: a single compact **「对话图显控制」** trigger sits next to the access-mode control and slides out a panel with the thumbnail switch, the hide switch and the column field — no row of buttons cluttering the composer
+- **Thumbnail grid with configurable columns**: one click collapses **every** image in the conversation into a grid of small tiles. The **缩略图显示列数** field sets the **columns per row (1–12)**; the value you enter is saved and reused on the next launch
+- **Hide / show**: one click hides every image and the space it occupied closes up completely (no blank band left behind); another click brings them back intact
+- **Only conversation images**: the plugin deliberately ignores pictures outside the message list — the signed-in account avatar and the sidebar glyphs are ordinary `<img>` elements too, and they are left untouched (fixed in 1.7.2)
+- **Safe by construction**: the thumbnail look is applied with classes and inline styles only. No node is ever moved, removed or reparented — an earlier build that did so made DSH's conversation slot throw `DOMException` and render the transcript empty
 - **Auto-enhance**: MutationObserver automatically enhances new images added to the chat, and re-adopts images whose class a React re-render overwrote
 - **Bring images into the chat (`display_image` tool, host side)**: one tool takes a local `path` (file **or** directory — TIFF/HEIC transcoded, optional downscale), a remote `url`, or a `query` (keyword image search: Huaban first, Bing as fallback) and returns ready-to-paste Markdown. Any file on this machine can be served in place via `/images/?abs=<path>` (loopback-only), no copying into the gallery root required
+- **Hotlink fallback (1.7.2)**: a search result can answer `200` and still fail in the browser, because some CDNs (Huaban via Tencent EdgeOne) reject any request whose `Referer` is not their own domain — the picture then shows as "无法预览". The tool now probes each URL the way a browser would and **only** re-saves the ones that would be blocked, so working links stay direct and nothing is downloaded unnecessarily
 
 ### Installation
 
@@ -210,8 +228,11 @@ After installing or editing plugin files, **fully quit all DSH Desktop processes
 
 ### Requirements
 
-- DeepSeek Harness ≥ 2.0 (with `webServer` service)
+- **DSH ≥ 2.0.14** — this release is verified end to end on **DSH NEXT 2.0.15**. The client half relies on `@deepseek-ai/dsh-client-ui-tool` being injectable, which is why 2.0.14 is the floor.
+- Host must expose the `webServer` service (standard in DSH Desktop).
 - Node.js ≥ 22
+- `sharp` 0.34.4 (declared as a dependency; it is what performs the lossless TIFF/HEIC transcoding)
+- **Windows note**: "show in folder" uses `explorer /select,`
 
 ### License
 
@@ -241,12 +262,14 @@ MIT
 - **点开即高清**：点击任意图片打开 lightbox 看全分辨率大图，放大看到每个像素；下载永远保存原始文件
 - **界面干净**：lightbox 的工具按钮（下载/关闭）、左右切换箭头、计数、标题在 lightbox **关闭时全部隐藏**，仅在实际看图时才显示，不会在对话界面留下按钮干扰布局
 - **灯箱缩放/平移面板**：手势能做的都给了一组显式按钮——`⊖` `⊕` `1×` 缩放（带实时百分比），加一组方向键移动视角（**按住可连续移动**）；滚轮、拖拽、`+`/`-`/`Shift+方向键` 全部保留
-- **会话内图片控制收进一个弹出面板**：输入框旁的「完全权限」右侧只留一个紧凑的 **「🖼 图片」** 触发器，点它滑出面板，四个操作都在里面——不再让一排按钮占着输入区
-- **可调列数的缩略图网格**：一键把**整个会话**的图片收成小图网格（标题横跨整行）；面板里有「列」输入框可设**每行几张（1–12）**，设置会被记住（刷新/重启后仍生效）
-- **整块隐藏 / 展开**：一键隐藏所有图片（每个图片块收成一条窄边），再点一下原样恢复——所有内联样式按块追踪并清理，图片不会丢
-- **跳图定位**：一个按钮定位图片——**左键**跳到上一张、**右键**跳到下一张；**左键三连**跳到离屏幕中心最远的一张、**右键三连**跳到最近的一张；落点会闪一下。步进是相对「上次落点」的，并且**到头即止不回绕**（回绕会让人以为方向反了）
+- **会话内图片控制收进一个弹出面板**：输入框旁只留一个紧凑的 **「对话图显控制」** 触发器，点它滑出面板，缩略图开关、隐藏开关、列数输入框都在里面——不再让一排按钮占着输入区
+- **可调列数的缩略图网格**：一键把**整个会话**的图片收成小图网格；面板里的 **「缩略图显示列数」** 输入框可设**每行几张（1–12）**，输入的值会保存为默认值，下次启动仍用它
+- **隐藏 / 展开**：一键隐藏所有图片，**并把它占的空间完全收掉**（不会留下一大块空白）；再点一下原样恢复
+- **只管对话区的图**：插件刻意忽略消息列表以外的图片——登录账号的头像和侧栏图标同样是 `<img>`，但一律不动（1.7.2 修复）
+- **结构上安全**：缩略图效果只用 class 和内联样式实现，**绝不移动、删除或重挂任何节点**。早期版本做过 reparent，结果让 DSH 的会话槽抛 `DOMException`、整段对话渲染成空白
 - **自动增强**：MutationObserver 自动增强新加入对话的图片；React 重渲染覆盖 class 后也会自动重新接管
 - **把图带进对话（宿主侧 `display_image` 工具）**：一个工具吃三种输入——本地 `path`（文件**或**目录，TIFF/HEIC 自动转码、可缩放）、网络 `url` 直链、`query` 关键词搜图（花瓣优先，Bing 回退），返回可直接粘贴的 Markdown。本机任意文件可通过 `/images/?abs=<路径>` 原地直读（仅限本机回环），无需先复制进图库目录
+- **防盗链自动降级（1.7.2）**：搜图结果可能返回 `200` 却在浏览器里显示不出来——部分 CDN（花瓣走腾讯云 EdgeOne）会拒绝 `Referer` 不是自家域名的请求，图片于是显示成「无法预览」。工具现在会**按浏览器的方式逐张探测**，**只把会被拦的那几张**转存到本地，能直连的保持直连，不浪费带宽
 
 ### 安装
 
@@ -353,8 +376,11 @@ curl -e "https://weibo.com" -o 图.jpg "https://wx1.sinaimg.cn/.../xxx.jpg"
 
 ### 环境要求
 
-- DeepSeek Harness ≥ 2.0（需要 `webServer` 服务）
+- **DSH ≥ 2.0.14** —— 本版本已在 **DSH NEXT 2.0.15** 上完整验证。浏览器端依赖 `@deepseek-ai/dsh-client-ui-tool` 可被注入，这是 2.0.14 作为下限的原因。
+- 宿主需提供 `webServer` 服务（DSH 桌面端标准配置）。
 - Node.js ≥ 22
+- `sharp` 0.34.4（已声明为依赖，TIFF/HEIC 的无损转码由它完成）
+- **Windows 说明**：「在文件夹中显示」使用 `explorer /select,`
 
 ### 许可证
 
